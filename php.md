@@ -1,5 +1,20 @@
 good online tutorial: http://www.codecademy.com/en/tracks/php
 
+Package manager modeled after npm & pip: htts://github.com/composer/composer. 
+More details here: http://blog.teamtreehouse.com/dependency-management-in-php-using-composer
+Installing composer on Windows with php 5.6.3 pulled via choco yielded:
+
+```
+Some settings on your machine make Composer unable to work properly.
+Make sure that you fix the issues listed below and run this script again:
+
+The openssl extension is missing, which means that secure HTTPS transfers are impossible.
+If possible you should enable it or recompile php with --with-openssl
+```
+
+An (older?) alternative to composer is PEAR: http://pear.php.net/, sudo apt get
+php-pearl.
+
 ```
 <?php
     $welcome = "Hello World";
