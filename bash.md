@@ -64,10 +64,10 @@ echo `pwd`
 whoami
 echo $0 # prints -bash
 pushd .; popd; dirs
-ssh-copy-id user@machine # writes ~/.ssh/authorized_keys
 nohup longrunningprog &
 ps -A | grep java | head -n 1 | cut -d' ' -f3 | xargs kill -9
 kill -9 1234
+source ~/.bashrc
 ```
 
 Chaining cmds:
@@ -95,3 +95,11 @@ Order of Interpretation: The bash shell carries out its various types of interpr
 * arithmetic              (from left to right)
 * word splitting
 * pathname expansion      (using *, ?, and [abc] )
+
+ssh cmds
+```
+ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa # dsa is gov standard (limited bit len)
+ssh-keygen -t rsa -b 2048
+cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys # for ssh to localhost
+ssh-copy-id user@machine # writes ~/.ssh/authorized_keys
+```
