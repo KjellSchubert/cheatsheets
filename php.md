@@ -59,8 +59,43 @@ FastCGI
 ---
 php[-cli].exe populates $argv and $argc (see http://php.net/manual/en/migration5.cli-cgi.php).
 For nginx reverse proxy with PHP FastCGI Process Manager(?) use see
-http://wiki.nginx.org/PHPFcgiExample.
+http://wiki.nginx.org/PHPFcgiExample. Alternatively using lighttpd:
 
+```
+sudo apt-get install lighttpd
+sudo apt-get install php5-cgi
+php-cgi --version
+sudo mkdir -p /etc/lighttpd/conf.d/
+sudo vim /etc/lighttpd/conf.d/fastcgi.conf
+# paste from https://wiki.archlinux.org/index.php/lighttpd
+sudo vim /etc/lighttpd/lighttpd.conf
+# paste include from http://www.cyberciti.biz/faq/stop-lighttpd-server/
+/etc/init.d/lighttpd restart # errored for me at 1st, port 80 was in use (nginx)
+sudo lsof -i:80 # optionally -t[erse], shows me nginx
+sudo /etc/init.d/nginx stop
+sudo /etc/init.d/lighttpd restart
+sudo lsof -i:80 # now shows lighttpd
+
+# test lighttp:
+curl http://localhost # shows default blurb in /var/www
+curl http://localhost/index.php # 404 unless you created /var/www/index.php
+
+# test fastcgi php
+sudo vim /var/www/index.php # e.g. add 'hello world'
+```
+
+Example /var/www/index.php:
+```
+hi, this is /var/www/index.php<br/>
+<?php
+$foo = 77;
+echo $foo, $_SERVER['REQUEST_METHOD'], var_dump($_SERVER);
+// _SERVER contains QUERY_STRING and plenty of other HTTP request details.
+?>
+```
+
+
+See also https://wiki.archlinux.org/index.php/lighttpd for php-fpm setup.
 
 PHP syntax
 ---
