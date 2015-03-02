@@ -3,6 +3,12 @@ Frequent cmds:
 ```
 grep -Ei <expr> <file>
 grep -Eir <expr> <dir>
+# (the \ before the * is necessary only if you have *.cpp files in cwd,
+# prefix cmd line with 'echo' to see shell char substitutions)
+grep -r foo --include \*.cpp src/
+# or the same with find instead of --include (note trailing \;):
+find src/ -name \*.cpp -exec grep -n "foo" {} \; -print
+# add grep -R for follow symbolic links
 
 # find
 find . -iname "*.cpp" # or -name or -path
