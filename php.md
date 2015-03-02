@@ -89,6 +89,7 @@ Example /var/www/index.php:
 hi, this is /var/www/index.php<br/>
 <?php
 $foo = 77;
+// see http://www.w3schools.com/php/php_superglobals.asp for $_SERVER
 echo $foo, $_SERVER['REQUEST_METHOD'], var_dump($_SERVER);
 // _SERVER contains QUERY_STRING and plenty of other HTTP request details.
 ?>
@@ -122,6 +123,13 @@ PHP syntax
 
     // strings
     echo "ab" . "cd\n"; // concat with . instead of the usual +
+    echo 'single quote\n'; # prints backslash & n
+    echo "double quote\n"; # prints ascii line break char
+    $foo = 123;
+    echo 'single quote $foo', "\n"; # prints literally foo
+    echo "double quote $foo", "\n"; # auto-replaces the var with its value!
+    assert("double quote $foo" === "double quote 123");
+    assert('double quote $foo' !== 'double quote 123');
 
     // loops
     for ($number = 1; $number <= 10; $number++) {}
@@ -201,5 +209,32 @@ PHP syntax
     // anything like python argparse or C++ gflags? E.g.
     // https://packagist.org/packages/pear/console_getopt
     // https://packagist.org/packages/donatj/flags
+
+    // constants
+    define("MYCONSTANT", 1234);
+    echo MYCONSTANT, "\n"; // note not $
+    //MYCONSTANT = 77; // error
+
+    // PHP arrays (covering what in Python is covered by lists and dicts, or more
+    // accurately OrderedDict, with some similarity to JS arrays which are also
+    // more like mappings from ints to values, and can have holes in JS as they
+    // can in PHP)
+    $x = array("a", "b", "foo" => "c", "d"); // instead of "foo" can use ints as keys
+    assert($x[0] === "a");
+    assert($x[1] === "b");
+    assert($x[2] === "d"); // since "b" had key 1
+    assert($x[3] === null);
+    assert($x[999] === null);
+    assert($x["foo"] === "c");
+    echo "x[...]=", $x["foo"], "\n";
+    // iter over array that doesn't have 'holes':
+    $arrlength = count($x);
+    assert(count($x) == 4); // number of key-value tuples, not max index in array
+    for($i = 0; $i < $arrlength; $i++)
+      echo "  for $i: ", $i, "=>", $x[$i], "\n"; // surprising here: $i in string gets replace with val!
+    // iter over array that has holes, or represents a general dict to begin with:
+    foreach($x as $key => $value)
+      echo "  foreach key/val: ", $key, "=>", $value, "\n";
+    // More on array ops: http://php.net/manual/en/language.operators.array.php
 ?>
 ```

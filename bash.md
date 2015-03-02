@@ -67,7 +67,33 @@ pushd .; popd; dirs
 nohup longrunningprog &
 ps -A | grep java | head -n 1 | cut -d' ' -f3 | xargs kill -9
 kill -9 1234
+killall vim
 source ~/.bashrc
+
+# less frequent cmds
+yum / apt-get / apt-search
+somecmd | tee savedIntermediateOutput | nextcmd # T pipe
+ip addr
+sudo lsof -i # show ports listened on
+sudo lsof -p <procid> # shows all FDs for procid: cwd, ports, files, ...
+sudo lsof | grep <somelockedfile>
+sudo iptables -L # list
+sudo iptables --line -vnL # list more verbosely
+sudo iptables -I INPUT 5 -i eth0 -p tcp --dport 6080 -m state --state NEW,ESTABLISHED -j ACCEPT
+ls -l /proc/*/cwd | grep <someworkdir>
+# procmon (from http://www.dedoimedo.com/computers/linux-cool-hacks.html)
+sudo apt-get install acct
+dump-acct /var/log/account/pacct
+/etc/init.d/acct start/stop
+iostat
+netstat
+netcat
+lsmod
+df .
+cat /proc/cpuinfo
+cat /proc/meminfo
+cat /proc/version
+uname -r
 ```
 
 Chaining cmds:
