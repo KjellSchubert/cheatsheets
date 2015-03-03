@@ -76,6 +76,12 @@ kill -9 1234
 killall vim
 source ~/.bashrc
 
+# variants for searching jars
+# a) search single dir:
+for i in *.jar; do jar -tvf "$i" | grep -Hsi SomeClassName; done
+# b) search dir tree
+find dir/ -name \*.jar -exec jar -tvf {} \; | grep -Hsi SomeClassName
+
 # less frequent cmds
 yum / apt-get / apt-search
 somecmd | tee savedIntermediateOutput | nextcmd # T pipe
@@ -100,6 +106,7 @@ cat /proc/cpuinfo
 cat /proc/meminfo
 cat /proc/version
 uname -r
+somecmd | vim - # the '-' makes it read stdin (cmds read from stderr)
 ```
 
 Chaining cmds:
