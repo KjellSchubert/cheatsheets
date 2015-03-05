@@ -61,3 +61,96 @@ GRANT ALL PRIVILEGES ON *.* TO 'foo'@'localhost' IDENTIFIED BY 'foopass' WITH GR
 # thats still an admin user?
 select User,Password from mysql.user; # shows new user 'foo'
 ```
+
+Create database from scratch:
+```
+create database testdb;
+show databases;
+use testdb;
+show tables; # starts empty
+CREATE TABLE department
+(
+DepartmentID INT,
+DepartmentName VARCHAR(20)
+);
+CREATE TABLE employee
+(
+LastName VARCHAR(20),
+DepartmentID INT
+);
+INSERT INTO department VALUES(31, 'Sales');
+INSERT INTO department VALUES(33, 'Engineering');
+INSERT INTO department VALUES(34, 'Clerical');
+INSERT INTO department VALUES(35, 'Marketing');
+INSERT INTO employee VALUES('Rafferty', 31);
+INSERT INTO employee VALUES('Jones', 33);
+INSERT INTO employee VALUES('Heisenberg', 33);
+INSERT INTO employee VALUES('Robinson', 34);
+INSERT INTO employee VALUES('Smith', 34);
+INSERT INTO employee VALUES('Williams', NULL);
+select * from department;
+
+# cross join: catesian product of 2 tables
+# 'Normal uses are for checking the server's performance'
+SELECT * FROM employee CROSS JOIN department;
+# => | Rafferty   |           31 |           31 | Sales          |
+
+# natural join: set of all combinations of tuples in R and S that are equal
+# on their common attribute name.
+# Natural join considered dangerous (risk adding columns), use explicit
+# inner join instead.
+SELECT * FROM employee NATURAL JOIN department;
+# => |           31 | Rafferty   | Sales          |
+
+# inner join: cartesian product filtered by predicate
+# a) explicit syntax (with INNER being optional)
+SELECT *
+FROM employee
+INNER JOIN department ON employee.DepartmentID = department.DepartmentID;
+
+# b) implicit syntax (which I like better atm), so cross join with filter in
+# WHERE clause:
+SELECT *
+FROM employee, department
+WHERE employee.DepartmentID = department.DepartmentID;
+
+# b) variant with table aliases specified, and projection in SELECT
+SELECT e.LastName, d.DepartmentId, d.DepartmentName
+FROM employee e, department d
+WHERE e.DepartmentID = d.DepartmentID;
+
+# outer join: cannot simply replace INNER with OUTER in explicit INNER join
+# syntax, gotta replace INNER with LEFT|RIGHT|FULL OUTER.
+# Result is same as for inner join but plus potential extra rows with NULLs.
+# The LEFT outer join will return all rows from the left table, including the
+# ones that don't match the predicate (in this cases filling non-matched cols
+# with nulls)
+SELECT *
+FROM employee
+LEFT OUTER JOIN department ON employee.DepartmentID = department.DepartmentID;
+# => plus Williams   |         NULL |         NULL | NULL
+
+SELECT *
+FROM employee
+RIGHT OUTER JOIN department ON employee.DepartmentID = department.DepartmentID;
+# => plus NULL       |         NULL |           35 | Marketing
+# (but not with Williams)
+
+SELECT *
+FROM employee
+FULL OUTER JOIN department ON employee.DepartmentID = department.DepartmentID;
+# not supported in mysql, would include both the extra lines from left and
+# right outer join, so Williams plus Marketing.
+# Simulate via UNION ALL of left and right join, see
+# http://stackoverflow.com/questions/4796872/full-outer-join-in-mysql
+```
+
+Union:
+```
+# I'm surprised this worked in mysql: rows are simply concatenated, columns
+# are not reshuffled to match up Department ID.
+SELECT * FROM employee UNION SELECT * FROM department;
+SELECT * FROM department UNION SELECT * FROM employee;
+
+# So UNION removes dups, but UNION ALL does not?
+```
