@@ -142,3 +142,8 @@ http://www.ibm.com/developerworks/library/os-giraph/.
 
 See also Apache Spark for a higher performance in-memory alternative to Hadoop,
 some details at http://stackoverflow.com/questions/25267204/hadoop-vs-spark.
+
+"Hadoop the definite guide" is a downloadable pdf, see
+http://ce.sysu.edu.cn/hope/UploadFiles/Education/2011/10/201110221516245419.pdf.
+Mentions some details on Hadoop + Hive usage at Facebook: general data store,
+log data store. Also has plenty of info on Hadoop extensions: Pig, Sqoop.
