@@ -122,8 +122,36 @@ vim SimpleApp.py
 bin/pyspark kjell/SimpleApp.py
 ```
 
+Running Spark apps on the cluster
+---
+
 Now how to submit a map-reduce script to an hdfs Hadoop/Spark cluster? I want
 to run the Hadoop WordCount.java equivalent with Spark. See
 https://spark.apache.org/docs/0.9.0/quick-start.html#a-standalone-app-in-python
 "Running on a cluster"
-TODO
+Is even a pyspark interactive shell map/reduce statement
+already parallelize across the cluster automatically? Judging by
+http://www.mccarroll.net/blog/pyspark2/ it is.
+
+```
+# from http://www.mccarroll.net/blog/pyspark2/
+# when you run bin/pyspark you get a sparkcontext sc right away.
+# So run this here interactively:
+wordcounts = sc.textFile('hdfs://localhost:9000/user/kschubert/isl') \
+  .map( lambda x: x.lower()) \
+  .flatMap(lambda x: x.split()) \
+  .map(lambda x: (x, 1)) \
+  .reduceByKey(lambda x,y:x+y) \
+  .map(lambda x:(x[1],x[0])) \
+  .sortByKey(False)
+wordcounts.top(50)
+```
+
+Also see https://spark.apache.org/docs/1.1.0/submitting-applications.html:
+```
+$SPARK_HOME/bin/spark-submit $SPARK_HOME/examples/src/main/python/pi.py 5 1000
+# optionally add --master spark://207.184.161.138:7077
+
+# now to run wordcount example that actually maps input (pi.py does not)
+$SPARK_HOME/bin/spark-submit $SPARK_HOME/examples/src/main/python/wordcount.py hdfs://localhost:9000/user/kschubert/isl
+```

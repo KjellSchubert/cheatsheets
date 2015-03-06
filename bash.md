@@ -83,6 +83,8 @@ for i in *.jar; do jar -tvf "$i" | grep -Hsi SomeClassName; done
 find dir/ -name \*.jar -exec jar -tvf {} \; | grep -Hsi SomeClassName
 
 # less frequent cmds
+scp foo.txt kschubert@192.168.190.128:
+scp foo.txt kschubert@192.168.190.128:foo.txt
 yum / apt-get / apt-search
 somecmd | tee savedIntermediateOutput | nextcmd # T pipe
 ip addr

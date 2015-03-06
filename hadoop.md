@@ -1,5 +1,7 @@
 Tutorial at http://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html. Some HDFS http://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
-(customizable replication factor, rack-aware replication).
+(customizable replication factor, rack-aware replication). Also see good
+tutorial [here](https://developer.yahoo.com/hadoop/tutorial/module4.html).
+
 
 Installation as stand-alone for testing:
 ```
@@ -130,6 +132,11 @@ bin/hdfs dfs -rm -r -f /user/kschubert/output
 bin/hadoop jar ./share/hadoop/tools/lib/hadoop-streaming-2.6.0.jar -mapper ../test/mapper.py -reducer ../test/reducer.py -input input -output output
 ```
 
+So where Hadoop streaming with 'key \t value \n' format on stdin & stdout
+allows writing mappers & reduces in any lang (bash, py)  https://developer.yahoo.com/hadoop/tutorial/module4.html also talks about Hadoop
+pipes for writing mappers & reducers in C++. Not sure what the advantage of
+Hadoop pipes over Hadoop streaming is.
+
 Hadoop web interface
 ```
 lsof -i
@@ -147,3 +154,87 @@ some details at http://stackoverflow.com/questions/25267204/hadoop-vs-spark.
 http://ce.sysu.edu.cn/hope/UploadFiles/Education/2011/10/201110221516245419.pdf.
 Mentions some details on Hadoop + Hive usage at Facebook: general data store,
 log data store. Also has plenty of info on Hadoop extensions: Pig, Sqoop.
+
+Data import into hdfs via Java API: see
+http://www.slideshare.net/martyhall/hadoop-tutorial-hdfs-part-3-java-api
+```
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.*;
+
+public class TestImport {
+  public static void main(String[] args) throws Exception {
+    // quick demo listing hdfs files, from
+    // http://www.slideshare.net/martyhall/hadoop-tutorial-hdfs-part-3-java-api?related=2
+    Configuration conf = new Configuration();
+    conf.set("fs.default.name", "hdfs://localhost:9000");
+    FileSystem hdfs = FileSystem.get(conf);
+    // or FileSystem hdfs = FileSystem.get( new URI( "hdfs://localhost:5000" ), configuration );
+    FileStatus[] files = hdfs.listStatus(new Path("/user"));
+    for (FileStatus file : files) {
+      System.out.println("hdfs file: " + file.getPath().getName());
+    }
+
+    // test code for writing data to single file:
+    {
+      Path path = new Path("/user/kschubert/testImport");
+      //FSDataOutputStream out = hdfs.create(path); // err if exist
+      //FSDataOutputStream out = hdfs.append(path); // err if nonexist
+      boolean overwrite = true;
+      FSDataOutputStream out = hdfs.create(path, overwrite);
+      out.writeUTF("hello\n");
+      out.writeInt(123);
+      out.close();
+      // print content like that:
+      // $HADOOP_PREFIX/bin/hdfs dfs -cat /user/kschubert/testImport
+    }
+  }
+}
+```
+Compile & run this via:
+```
+export CP_HADOOP=`$HADOOP_PREFIX/bin/hadoop classpath --glob`
+export CLASSPATH=.:$CP_HADOOP
+javac TestImport.java
+
+# make sure hadoop is running locally
+cat $HADOOP_PREFIX/etc/hadoop/core-site.xml # should be localhost:9000
+$HADOOP_PREFIX/sbin/start-dfs.sh # only if not running yet
+curl http://localhost:9000 # its not an HTTP port, but a decent test for if Hadoop's running
+
+# now run test import against localhost:9000
+java TestImport
+```
+
+Now after importing the data we can access it via hdfs FSDataInputStream from
+Java of course. E.g. see
+http://www.slideshare.net/martyhall/hadoop-tutorial-mapreduce-on-yarn-part-1-overview-and-installation
+for how to process the data with Hadoop 2's yarn. So org.apache.hadoop.mapred
+is the old Hadoop 1 map-reduce API, org.apache.hadoop.mapreduce is the new
+Hadoop 2 API. How to read the input files for MapReduce jobs? See
+http://www.slideshare.net/martyhall/hadoop-tutorial-mapreduce-part-4-input-and-output
+slides around slide 15 for info on InputFormat: this seems to deserialize the
+hdfs file into pairs of key/value records. TextInputFormat is the default input
+format: assumes utf8, breaks file on \n delimiters. See also
+https://issues.apache.org/jira/browse/MAPREDUCE-232 for attempts to generalize
+this. Other InputFormats besides TextInputFormat are:
+
+* NLineInputFormar
+* TableInputFormat (HBASE)
+* StreamInputFormat
+* [SequenceFileInputFormat](http://hadooptutorial.info/tag/full-fileinputformat-example-hadoop-sequence-file-input-format/)
+* your [custom InputFormat](https://developer.yahoo.com/hadoop/tutorial/module5.html#inputformat)
+
+```
+$HADOOP_PREFIX/sbin/start-yarn.sh
+lsof -i shows additional ports now, around default ports 8xxxx
+
+# test yarn with builtin example:
+$HADOOP_PREFIX/bin/yarn jar $HADOOP_PREFIX/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar pi 5 1000
+$HADOOP_PREFIX/bin/mapred job -list # funky exception in 2.6 (with no jobs running)
+
+# now run variant of http://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html applied to example data written above.
+TODO
+```
+
+How to process this data via Spark (Scala or Python)?
+TODO
