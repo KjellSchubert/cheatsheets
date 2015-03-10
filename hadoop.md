@@ -236,5 +236,5 @@ $HADOOP_PREFIX/bin/mapred job -list # funky exception in 2.6 (with no jobs runni
 TODO
 ```
 
-How to process this data via Spark (Scala or Python)?
-TODO
+Links:
+* [MapReduceAlgorithms](https://github.com/lintool/MapReduceAlgorithms/blob/master/MapReduce-book-final.pdf)
