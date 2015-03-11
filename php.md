@@ -95,6 +95,17 @@ echo $foo, $_SERVER['REQUEST_METHOD'], var_dump($_SERVER);
 ?>
 ```
 
+phpdbg
+---
+
+Very similar to gdb:
+```
+phpdbg <script>
+help
+break <line>
+run
+ev $name # evals exprs
+```
 
 See also https://wiki.archlinux.org/index.php/lighttpd for php-fpm setup.
 
@@ -104,7 +115,7 @@ PHP syntax
 ```
 <?php
     assert_options(ASSERT_BAIL, true); // otherwise assert just prints warning
-    error_reporting(E_ALL); // recommended when writing new code (how to exit on error?)
+    error_reporting(E_ALL | E_STRICT); // recommended when writing new code (how to exit on error?)
 
     $welcome = "Hello World";
     echo $welcome;
@@ -180,6 +191,10 @@ PHP syntax
     echo "\nvar_dump(get_defined_vars()):";
     //var_dump(get_defined_vars()); // all vars in scope
 
+    // impl interface Iterator to have foreach work with custom classes,
+    // not just arrays, see http://php.net/manual/en/language.oop5.iterations.php
+
+
     // include files
     // You can replace 'include' with 'require', the latter will fail on error
     // (e.g. non existing file), the former will print warning only.
@@ -233,6 +248,73 @@ PHP syntax
     assert($x->memberFun() === 8);
 
 
+    // trait: interesting concept, useful for languages without MI.
+    // So this is yet another way to reuse code (without which you'd otherwise
+    // need a member variable with another level of indirection for accessors)
+    // Besides via parent::func() the trait impl can effectively have abstract
+    // methods impl'd by the trait-using (sort of derived) class.
+    // See http://php.net/manual/en/language.oop5.traits.php
+    trait MyTrait {
+      function fun1() {
+        // could also do this here if derived class would have a base/parent class:
+        //parent::sayHello(); // sort of an abstract method call (impl'd in derived/using cls)
+        // this doesn't work (not accessible): fun3();
+        return 7;
+      }
+    }
+    class MyTraitor {
+      use MyTrait;
+      function fun2() {
+        assert($this->fun1() === 7);
+      }
+      public function fun3() {
+        return 8;
+      }
+    }
+    (new MyTraitor)->fun2();
+
+    // clone & __clone, for custom deep copies (as by default clone is shallow)
+    class MyClonable {
+      public $myMember = 123;
+      // this __clone should really be called __onAfterClone() imo!
+      function __clone() {
+        return $this->foo = 7;
+      }
+    }
+    $x = new MyClonable();
+    assert(!isset($x->foo));
+    $y = clone $x;
+    $x->myMember = 567;
+    assert(isset($y->foo));
+    assert($y->foo === 7); // this ensures __onAfterClone aka __clone was called
+    assert($y->myMember = 123); // this ensures we got a clone
+
+    /*
+    // obj compare: http://php.net/manual/en/language.oop5.object-comparison.php
+    // Only used as comparison op for method call that take compare funcs,
+    // e.g. usort(). Cannot override lessthan, see
+    // http://stackoverflow.com/questions/3111668/comparison-operator-overloading-in-php
+    class MyComparable {
+      public $foo;
+      public function __construct($val) {
+        $this->foo = $val;
+      }
+      public static function compare($a, $b) {
+        $lhs = (int)$a->foo;
+        $rhs = (int)$b->foo;
+        $a->wasCompared = "lhs";
+        $b->wasCompared = "rhs";
+        return $lhs < $rhs ? -1 : ($lhs === $rhs ? 0 : 1);
+      }
+    }
+    $x = new MyComparable("2");
+    $y = new MyComparable("0055");
+    // not called during < comparison
+    assert($x < $y);
+    assert($x->wasCompared === "lhs");
+    */
+
+
     // functions, func-local classes
     function myFunc() {
       class MyOtherException extends MyException { }
@@ -281,6 +363,32 @@ PHP syntax
     // There thankfully is no func overloading:
     //function func1() {}
     //function func1() {} // error
+    // But there's a concept called 'overloading' in PHP, an umbrella term
+    // for defining funcs __get/set/isset/unset for props, and __call/__callStatic
+    // for methods. Maybe 'interpreter hooks' (which can be used for implementing
+    // C++-style func overloading) would have been a better term.
+    class Overloader {
+      public $member1 = 7;
+      function __set($name, $val) {
+        $this->member1 = $name . (string)$val;
+      }
+      function __call ( $name ,  $args) {
+        assert($name === 'foobar');
+        # this here allows you to impl func overloading:
+        if (count($args) == 1)
+          return $args[0] + 1;
+        return $args[0] * 10 + $args[1];
+      }
+    }
+    $x = new Overloader;
+    assert($x->member1 === 7);
+    $x->member1 = 8; // this does not call Overloader.__set (only called for unk props)
+    assert($x->member1 === 8);
+    $x->other = 6;
+    assert($x->member1 === "other6");
+    assert($x->foobar(1) === 2);
+    echo "XXXXXX", $x->foobar(1, 2);
+    assert($x->foobar(1, 2) === 12);
 
     // var arg lists: function sum(...$numbers) {} represented args as array.
     // Also this ... is an operator that unpacks an array for a func call
@@ -339,6 +447,22 @@ PHP syntax
     });
     echo "retVal=", $retVal;
     assert($retVal == 2109);
+
+
+    // optional typehinting in php5, cannot specify int or string but userdef'd
+    // types, see http://php.net/manual/en/language.oop5.typehinting.php
+    function funcWithHints(Overloader $x) {
+      return 7;
+    }
+    //funcWithHints(123); // error
+    assert(funcWithHints(new Overloader) === 7);
+
+    function funcWithHints2(callable $x) {
+      return $x(7);
+    }
+    //funcWithHints2("hi"); // error
+    assert(funcWithHints2(function($val) { return $val * 10; }) == 70);
+
 
     // null / NULL
     $var = null;
@@ -534,6 +658,31 @@ PHP syntax
     assert($x === 6);
     // in addition to this assign-by-ref there's passing func args by ref
     // (out vars) and returning by ref. Dont overuse refs!
+
+
+    // generators like in Python or JS:
+    function gen() {
+      yield 3;
+      yield 6;
+    }
+    $sum = 0;
+    foreach (gen() as $number)
+      $sum += $number;
+    assert($sum === 9);
+
+    // python-style coroutines we also have (with Generator::send()).
+    // semantics of send() exactly as in python.
+    // One difference to python is generator init: the new gen immediately
+    // has its first current() value, so unlike in python the gen doesnt need
+    // to be 'primed'. And next() has no retval.
+    function coro() {
+      $val = (yield 3);
+      yield $val * 10;
+    }
+    $genObj = coro();
+    assert($genObj->current() == 3);
+    assert($genObj->send(10) == 100);
+    assert($genObj->next() == null); // next() is like send(null), same as python
 
     echo "SUCCESS";
 ?>

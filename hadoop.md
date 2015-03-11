@@ -236,5 +236,10 @@ $HADOOP_PREFIX/bin/mapred job -list # funky exception in 2.6 (with no jobs runni
 TODO
 ```
 
+What happens when for TextInputFormat there's a record (line) split across the
+64MB block boundary? See
+http://stackoverflow.com/questions/14291170/how-does-hadoop-process-records-records-split-across-block-boundaries. So looks like there's a (usually) small number of remote reads going
+on in each mapper to fetch bytes across block boundaries from a remove data node?
+
 Links:
 * [MapReduceAlgorithms](https://github.com/lintool/MapReduceAlgorithms/blob/master/MapReduce-book-final.pdf)
