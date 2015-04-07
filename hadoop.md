@@ -51,6 +51,11 @@ echo "Hello World Bye World" > file01
 echo "Hello Hadoop Goodbye Hadoop" > file02
 bin/hdfs dfs -cat /home/kschubert/hadoop/test/input/file01 # "Hello ..."
 
+# if you have no bin/hdfs availabe the use hadoop cmd directly:
+# see http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
+hadoop fs -ls -R hdfs://some-machine.VOL1:9000/some-dir
+hadoop fs -tail hdfs://some-machine.VOL1:9000/some-dir
+
 # run app
 bin/hadoop jar wc.jar WordCount /home/kschubert/hadoop/test/input /home/kschubert/hadoop/test/output
 
