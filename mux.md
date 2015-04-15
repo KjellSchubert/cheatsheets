@@ -1,0 +1,3 @@
+# select as in vim (v y), number from 1, ...
+https://github.com/tony/tmux-config/blob/public/.tmux.conf
+# also see https://gist.github.com/MohamedAlaa/2961058

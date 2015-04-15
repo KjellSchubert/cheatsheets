@@ -7,3 +7,6 @@ p(rint) <var>
 p $1 # prints previously printed var again
 p(rint)t(ype) <var>
 set <var> = 10
+
+# prevent thread switch during n(ext)
+set scheduler-locking on

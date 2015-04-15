@@ -144,3 +144,10 @@ ssh-keygen -t rsa -b 2048
 cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys # for ssh to localhost
 ssh-copy-id user@machine # writes ~/.ssh/authorized_keys
 ```
+
+Edit shortcuts
+---
+See [here](https://www.gnu.org/software/bash/manual/html_node/Commands-For-Moving.html):
+ctrl-a/e goto begin/end of line
+ctrl-u/k deletes/kills until begin/end of line
+esc+f/b moves forward/backward 1 word (on mac, otherwise alt)
