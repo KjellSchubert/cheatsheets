@@ -50,3 +50,5 @@ cmap w!! w !sudo tee > /dev/null %
 
 " http://stackoverflow.com/questions/1747091/how-do-you-use-vims-quickfix-feature
 set makeprg=make
+
+set statusline+=%F
