@@ -46,6 +46,7 @@ My most frequent shortcuts & cmds in normal mode:
   (alternatively use tabs: :tabe <filename> gt  gT ..., but using buffers
   seems to be preferred)
 * \c within /? searches to make them context-insensitive
+* C-n to autocomplete (also see YouCompleteMe plugin)
 * :A (with A.vim)
 * gf to open #include file under cursor (assuming cwd is correct)
 * :make :copen :ccl :cn :cb (or jk<enter>) for quickfix window (navigate
@@ -62,3 +63,7 @@ My most frequent shortcuts & cmds in normal mode:
   very large repos (except typing can get somewhat slow)
 * :%s/old/new/g to substitute/replace all (append c to confirm). The %
   stands for whole file.
+
+TODO:
+* checkout https://github.com/christoomey/vim-tmux-navigator
+* http://stackoverflow.com/questions/25083238/how-can-i-browse-output-of-any-random-command-in-quickfix-window
