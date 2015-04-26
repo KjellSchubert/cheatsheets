@@ -19,6 +19,7 @@ each feature or bugfix on github:
 git checkout master
 git branch <feature xyz>
 git checkout <feature xyz>
+# or simpler: git checkout -b <feature xyz> -t origin/master
 vim ...
 git status
 git diff
@@ -51,6 +52,16 @@ git merge --squash <feature or bugfix branch>
 git status
 git diff --cached
 git commit
+```
+
+Pulling changes into your repo clone from upstream after you pull requests got 
+accepted:
+```
+git remote add upstream https://github.com/joyent/http-parser
+git fetch upstream
+git checkout master
+git merge upstream/master # should print 'fast forward'
+# optional git log to verify changeset hashes
 ```
 
 Other somewhat frequent cmds:

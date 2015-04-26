@@ -6,7 +6,10 @@ hg pull --rebase
 
 b)
 hg up $revisionToAppendRebasedChangesetsTo
-hg rebase -r changesetToRebase
+hg rebase -r changesetToRebase  
+
+c) squash like git rebase -i HEAD~2 (squashes last 2 commits):
+hg rebase --dest tip~2 --base tip --collapse
 ```
 
 .hgrc
