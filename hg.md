@@ -67,3 +67,9 @@ sudo iptables --line -vnL
 # num 5 is REJECT line, let's accept port 6080
 sudo iptables -I INPUT 5 -i eth0 -p tcp --dport 6080 -m state --state NEW,ESTABLISHED -j ACCEPT
 ```
+
+List all files under hg control underneath a subdir:
+```
+hg status -cman --include experimental/kschubert # clean mod added no-status
+hg status -cman --include experimental/kschubert | tar czvf snapshot.tgz --files-from -
+```

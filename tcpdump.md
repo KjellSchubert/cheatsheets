@@ -27,3 +27,10 @@ sudo tcpdump -r capturefile -s 0 -A
 # (add 'tcp port 80 and' to condition if needed)
 sudo tcpdump -r capturefile -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'
 ```
+
+# loopback http traffic:
+sudo tcpdump -i lo port 8080 -A -s 0 # prints ugly tcp headers though
+sudo tcpdump -i lo port 8080 -nnvvXSs 0 # hexdump of full packets (incl ip hdr)
+sudo tshark -i lo 'tcp port 8080' # lacks http headers & body
+sudo tshark -i lo -R 'tcp.port==8080' -T pdml # ultra-verbose parsed http
+sudo tshark -i lo port 8080  -V -R "http.request || http.response" # neat output

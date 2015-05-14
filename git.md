@@ -25,6 +25,8 @@ git status
 git diff
 git add -u # or -A for new files
 git commit -m 'msg'
+git amend -a # stages all changed & removed files, then amends
+git reflog # shows old amend steps you can git reset --hard to
 git show
 git log
 git lg

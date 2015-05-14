@@ -35,6 +35,9 @@ echo -e "a\nb\nc" | xargs --verbose -I % echo %
 tar xvf arch.tar.gz -C tmp/a/b/c
 tar tf arch.tar.gz # or simply less arch.tar.gz
 tar czvf arch.tar.gz foo bar
+# when tar x messes up file permissions (e.g. when the tar was created
+# on Windows):
+tar tzf win-changes.tgz | xargs chmod --reference=foo.txt
 
 # curl
 curl -O http://whatever.org/foo  # like wget (-o to set filename)
@@ -68,6 +71,8 @@ ln [-s] <src> <dst>
 $PWD
 echo `pwd`
 whoami
+hostname
+ifconfig
 echo $0 # prints -bash
 pushd .; popd; dirs
 nohup longrunningprog &
@@ -83,11 +88,12 @@ for i in *.jar; do jar -tvf "$i" | grep -Hsi SomeClassName; done
 find dir/ -name \*.jar -exec jar -tvf {} \; | grep -Hsi SomeClassName
 
 # less frequent cmds
+chmod --reference=file1 file2
 scp foo.txt kschubert@192.168.190.128:
 scp foo.txt kschubert@192.168.190.128:foo.txt
 yum / apt-get / apt-search
 somecmd | tee savedIntermediateOutput | nextcmd # T pipe
-ip addr
+ip addr # or ifconfig
 sudo lsof -i # show ports listened on
 sudo lsof -p <procid> # shows all FDs for procid: cwd, ports, files, ...
 sudo lsof | grep <somelockedfile>
@@ -109,6 +115,7 @@ cat /proc/meminfo
 cat /proc/version
 uname -r
 somecmd | vim - # the '-' makes it read stdin (cmds read from stderr)
+hexdump -C <file> # canonical hexdump format
 ```
 
 Chaining cmds:

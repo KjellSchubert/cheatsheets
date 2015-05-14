@@ -91,7 +91,8 @@ My most frequent shortcuts & cmds in normal mode:
   Kinda crappy, todo. Atm best: !find pro<tab> -iname http1x\*<enter> (with zsh)
   and then mouse copy result file name. Also crappy. Can also !find ... > delme,
   then :cfile delme<enter> to create quickfix from file.
-
+* :sp or :vsp to split
+* C-e/y to scroll up/down single line (useful when cmp :vsp)
 TODO:
 * https://www.youtube.com/watch?v=aHm36-na4-4
 * https://github.com/skwp/dotfiles
