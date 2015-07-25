@@ -20,6 +20,9 @@ find ../AMCC -path */xerces*.vcproj | head -n 5 | xargs --verbose head -n 10
 find ../AMCC -path */xerces*.vcproj | head -n 5 | xargs -I % head -n 10 % # or use 'filename' instead of %
 find ../AMCC -path */xerces*.vcproj | head -n 5 | xargs --verbose -I % head -n 10 %
 find ../AMCC -size +100000 | xargs ls -lh
+# to create hg repo from existing dir tree
+hg init
+find . -type f -not -path ./.hg\* | xargs hg add
 
 # xargs exec'ing multiple cmds which each found file (from http://stackoverflow.com/questions/6958689/xargs-with-multiple-commands-as-argument)
 find ../AMCC -path */xerces*.vcproj | head -n 5 | xargs --verbose -I % sh -c "head -n 10 % && ls -l %"
@@ -38,7 +41,10 @@ tar czvf arch.tar.gz foo bar
 # when tar x messes up file permissions (e.g. when the tar was created
 # on Windows):
 tar tzf win-changes.tgz | xargs chmod --reference=foo.txt
+find somedir -type f | xargs chmod --reference=foo.txt
 
+# zip
+zip -r -X -xthirdparty\* -x\*.sdf -x\*Debug\* bla.zip bla/
 # curl
 curl -O http://whatever.org/foo  # like wget (-o to set filename)
 curl -v
@@ -150,7 +156,11 @@ ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa # dsa is gov standard (limited bit len)
 ssh-keygen -t rsa -b 2048
 cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys # for ssh to localhost
 ssh-copy-id user@machine # writes ~/.ssh/authorized_keys
-```
+mosh -6 $DEVSERVER
+# if mosh lists detached sessions just kill them (or use mosh -d?)
+tmux attach
+mosh -d -6 $DEVSERVER -- tmux attach # same in 1 cmd
+``
 
 Edit shortcuts
 ---

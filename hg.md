@@ -73,3 +73,13 @@ List all files under hg control underneath a subdir:
 hg status -cman --include experimental/kschubert # clean mod added no-status
 hg status -cman --include experimental/kschubert | tar czvf snapshot.tgz --files-from -
 ```
+
+init repo from scratch:
+```
+hg init
+find . -type f --exclude=.hg\* | xargs hg add
+hg com -m initial
+hg serve -6 -p 8080
+# after hg clone & push from client-side:
+hg up tip
+```

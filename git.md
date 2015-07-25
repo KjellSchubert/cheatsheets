@@ -77,3 +77,6 @@ git checkout --track origin/some_branch
 
 git diff master # to diff what the squashed changeset will be
 ```
+
+The git status can be very slow in large codebases, instead run: 
+>git status -uno

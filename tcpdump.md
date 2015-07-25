@@ -34,3 +34,4 @@ sudo tcpdump -i lo port 8080 -nnvvXSs 0 # hexdump of full packets (incl ip hdr)
 sudo tshark -i lo 'tcp port 8080' # lacks http headers & body
 sudo tshark -i lo -R 'tcp.port==8080' -T pdml # ultra-verbose parsed http
 sudo tshark -i lo port 8080  -V -R "http.request || http.response" # neat output
+sudo tshark -i lo -f "src port 8080 or dst port 8080" -V -R http
