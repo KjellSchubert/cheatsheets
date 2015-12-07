@@ -15,6 +15,10 @@ use plugins sparingly at first since builtin vim functionality is likely to
 result in more efficient workflows (example NERDTree). Some worthwhile
 plugins:
 * clang-format
+* YouCompleteMe
+* [dispatch](https://github.com/tpope/vim-dispatch) for async make, with
+  " dispatch
+  nnoremap <C-b> :w<CR>:Dispatch<CR>
 * [a.vim](http://vim.wikia.com/wiki/Easily_switch_between_source_and_header_file)
 * [:Grep](https://github.com/yegappan/grep) for cmdline syntax grep instead
   of :vimgrep (personal preference):
