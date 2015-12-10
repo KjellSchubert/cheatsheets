@@ -13,10 +13,16 @@ info args
 p(rint) <var> # or expression like *ptr or ptr[5]
 p $1 # prints previously printed var again
 p(rint)t(ype) <var>
+
 set <var> = 10
 set variable i = 10
 # prevent thread switch during n(ext)
 set scheduler-locking on
+
+# to deal with ptrs to large C-style arrays
+p vector.begin@10 # to print array
+set logging on
+set logging file gdb2.txt
 
 # print mem content as string
 x/520c 0x7f6fec545000 # crappy formatting
