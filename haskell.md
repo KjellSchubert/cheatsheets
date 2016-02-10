@@ -164,13 +164,22 @@ compare 10 6 => GT
 # list comprehension similar as in python:
 [x+3 | x <- [1,5,3,1,6]] <=> map (+3) [1,5,3,1,6] 
 # <=> python's [x+3 for x in [1,5,3,1,6]]
+# or with condition for [x for x in range(1,10) if x%2 == 0]
+[x | x <- [1..10], odd x]
 
-# example filter with guards
+# example filter with guards, as a neat syntax for a long repeated if then else
+# or switch statement
 filter :: (a -> Bool) -> [a] -> [a]  
 filter _ [] = []  
 filter p (x:xs)   
     | p x       = x : filter p xs  
     | otherwise = filter p xs 
+
+# backticks to call (or define) func with infix syntax
+3 `myCompare` 2  
+
+$ 
+. for function composition f(g(g)) <=> f . g x
 
 data PersonInfo = Person String String -- first, last # type name, ctor name
 data Person = Person String String -- usually type name & ctor func name are ==

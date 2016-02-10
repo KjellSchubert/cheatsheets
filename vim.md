@@ -65,7 +65,8 @@ My most frequent shortcuts & cmds in normal mode:
 * cw c3w - change word
 * cc to change whole line (like dd deletes whole line)
 * c$ to change till end of line
-* ci' ci" cib - change in quotes and brackets
+* ci' ci" cib - change in quotes and brackets, cab changes all text including [] 
+  :help text-objects
 * i I a A o O for entering insert mode
 * v/V y/d p/P for copy paste
 * ctrl-v shift-I //  <esc> (or 3x) to comment / uncomment C++ style
@@ -97,6 +98,7 @@ My most frequent shortcuts & cmds in normal mode:
   then :cfile delme<enter> to create quickfix from file.
 * :sp or :vsp to split
 * C-e/y to scroll up/down single line (useful when cmp :vsp)
+* registers (like having multiple Windows clipboards): :reg "ay "ap "by "bp
 TODO:
 * https://www.youtube.com/watch?v=aHm36-na4-4
 * https://github.com/skwp/dotfiles
