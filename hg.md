@@ -10,6 +10,7 @@ hg rebase -r changesetToRebase
 
 c) squash like git rebase -i HEAD~2 (squashes last 2 commits):
 hg rebase --dest tip~2 --base tip --collapse
+hg strip -r tip~2 --keep
 ```
 
 .hgrc
@@ -82,4 +83,12 @@ hg com -m initial
 hg serve -6 -p 8080
 # after hg clone & push from client-side:
 hg up tip
+```
+
+Commands for viewing old changesets:
+
+```
+hg status --change <rev>
+hg status --change <rev> --no-status # for xargs
+hg diff --change <rev> <file>
 ```

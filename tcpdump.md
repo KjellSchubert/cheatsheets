@@ -26,7 +26,6 @@ sudo tcpdump -r capturefile -s 0 -A
 # the same but filtering out some of the packets
 # (add 'tcp port 80 and' to condition if needed)
 sudo tcpdump -r capturefile -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'
-```
 
 # loopback http traffic:
 sudo tcpdump -i lo port 8080 -A -s 0 # prints ugly tcp headers though
@@ -35,3 +34,6 @@ sudo tshark -i lo 'tcp port 8080' # lacks http headers & body
 sudo tshark -i lo -R 'tcp.port==8080' -T pdml # ultra-verbose parsed http
 sudo tshark -i lo port 8080  -V -R "http.request || http.response" # neat output
 sudo tshark -i lo -f "src port 8080 or dst port 8080" -V -R http
+
+tshark -i eth0 port 80 -R 'http.request and not http contains Authorization: and not http.request.uri contains foobar and ipv6.dst==1234:0:...:0' -V
+```

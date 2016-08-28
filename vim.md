@@ -15,6 +15,10 @@ use plugins sparingly at first since builtin vim functionality is likely to
 result in more efficient workflows (example NERDTree). Some worthwhile
 plugins:
 * clang-format
+* YouCompleteMe
+* [dispatch](https://github.com/tpope/vim-dispatch) for async make, with
+  " dispatch
+  nnoremap <C-b> :w<CR>:Dispatch<CR>
 * [a.vim](http://vim.wikia.com/wiki/Easily_switch_between_source_and_header_file)
 * [:Grep](https://github.com/yegappan/grep) for cmdline syntax grep instead
   of :vimgrep (personal preference):
@@ -61,7 +65,8 @@ My most frequent shortcuts & cmds in normal mode:
 * cw c3w - change word
 * cc to change whole line (like dd deletes whole line)
 * c$ to change till end of line
-* ci' ci" cib - change in quotes and brackets
+* ci' ci" cib - change in quotes and brackets, cab changes all text including [] 
+  :help text-objects
 * i I a A o O for entering insert mode
 * v/V y/d p/P for copy paste
 * ctrl-v shift-I //  <esc> (or 3x) to comment / uncomment C++ style
@@ -93,6 +98,7 @@ My most frequent shortcuts & cmds in normal mode:
   then :cfile delme<enter> to create quickfix from file.
 * :sp or :vsp to split
 * C-e/y to scroll up/down single line (useful when cmp :vsp)
+* registers (like having multiple Windows clipboards): :reg "ay "ap "by "bp
 TODO:
 * https://www.youtube.com/watch?v=aHm36-na4-4
 * https://github.com/skwp/dotfiles
