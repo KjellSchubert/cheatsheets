@@ -228,6 +228,12 @@ putStr (concat $ replicate 3 "foo")
 
 lines (readFile "LICENSE") # Couldn't match type ‘IO String’ with ‘[Char]’
 
+-- fmap: apply func to elems in container, has to be defined for each kind
+-- of container (Maybe, lists), so for lists it acts lie map. fmap is a Functor?
+-- Or is a list the functor (the thing that can be mapped over)?
+fmap (\v -> v+1) $ [7,8]  -- [8,9]
+fmap (\v -> v+1) $ Just 7  -- 8
+:t fmap  -- fmap :: Functor f => (a -> b) -> f a -> f b # e.g. f = list or IO
 
 # TODO
 import Network.Http.Client
