@@ -4,20 +4,20 @@
 " http://unix.stackexchange.com/questions/547/make-my-zsh-prompt-show-mode-in-vi-mode
 
 syntax on
-filetype indent plugin on
+set encoding=utf-8
 set tabstop=8
 set expandtab
-set softtabstop=4
-set shiftwidth=4
+set softtabstop=2
+set shiftwidth=2
 set autoindent
 set smartindent
+set statusline+=%F
+" execute pathogen#infect()
 
 " vimtutor
 " from https://danielmiessler.com/study/vim/ :
+noremap zz <Esc>:w<CR>
 inoremap jk <ESC>
-
-" forgot sudo
-cmap w!! w !sudo tee > /dev/null %
 
 " frequent cmds:
 " copy/paste of code block: shift-V, y, shift-P
@@ -51,4 +51,16 @@ cmap w!! w !sudo tee > /dev/null %
 " http://stackoverflow.com/questions/1747091/how-do-you-use-vims-quickfix-feature
 set makeprg=make
 
-set statusline+=%F
+" more intuitive page up/down with ctrl jk
+nnoremap <C-j> <C-f>
+nnoremap <C-k> <C-b>
+
+" swap colon and semicolon (in normal mode only)
+nnoremap ; :
+nnoremap : ;
+
+" faster :b#
+nnoremap <TAB> :b#<CR>
+
+" rm trailing whitespace
+autocmd BufWritePre *.pl :%s/\s\+$//e

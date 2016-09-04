@@ -1,0 +1,42 @@
+On mac:
+VirtualBox Settings Network host-only vboxnet0, also shows mac addrs
+ifconfig # shows vboxnet0 for host-only
+VBoxManage dhcpserver remove --ifname vboxnet0
+VBoxManage dhcpserver add --ifname vboxnet0 --ip 192.168.56.2 --netmask 255.255.255.0 --lowerip 192.168.56.150 --upperip 192.168.56.199 --enable
+VBoxManage hostonlyif remove vboxnet0
+VBoxManage hostonlyif create
+VBoxManage hostonlyif ipconfig vboxnet0 --ip 10.1.0.254 --netmask 255.255.0.0
+VBoxManage modifyvm Lubuntu14 --nic1 nat --nic2 hostonly --hostonlyadapter2 vboxnet0
+
+=>
+
+On linux:
+ifconfig
+  enp0s3    Link encap:Ethernet  HWaddr 08:00:27:98:b5:91
+            inet addr:10.0.2.15  Bcast:10.0.2.255  Mask:255.255.255.0
+            inet6 addr: fe80::2a11:d3af:2347:acc6/64 Scope:Link
+  enp0s8    Link encap:Ethernet  HWaddr 08:00:27:11:3e:80
+            inet addr:192.168.56.150  Bcast:192.168.56.255  Mask:255.255.255.0
+            inet6 addr: fe80::a404:2e21:c470:4a43/64 Scope:Link
+arp -n
+  Address                  HWtype  HWaddress           Flags Mask            Iface
+  192.168.56.2             ether   08:00:27:5c:7f:d1   C                     enp0s8
+  192.168.56.1             ether   0a:00:27:00:00:00   C                     enp0s8
+  10.0.2.2                 ether   52:54:00:12:35:02   C                     enp0s3
+  # so the .1 is vboxnet0
+
+on mac:
+* curl http://192.168.56.150:8000 # works
+* ssh someuser@192.168.56.150 # works
+* ifconfig
+  bridge0:
+    ether 36:36:3b:7c:2f:00
+    vboxnet0: flags=8943<UP,BROADCAST,RUNNING,PROMISC,SIMPLEX,MULTICAST> mtu 1500
+               ether 0a:00:27:00:00:00
+               inet 192.168.56.1 netmask 0xffffff00 broadcast 192.168.56.255
+
+tcpdump -i enp0s8 arp
+arp -d 192.168.56.1
+  15:43:25.928223 ARP, Request who-has 192.168.56.1 tell 192.168.56.150, length 28
+  15:43:25.928403 ARP, Reply 192.168.56.1 is-at 0a:00:27:00:00:00
+
